@@ -46,8 +46,9 @@ ARG HUGGINGFACE_ACCESS_TOKEN
 # Change working directory to ComfyUI
 WORKDIR /comfyui
 
-# Clone custom nodes
+# Clone and install custom nodes
 RUN git clone https://github.com/cubiq/ComfyUI_InstantID.git custom_nodes/ComfyUI_InstantID
+RUN pip3 install --upgrade -r custom_nodes/ComfyUI_InstantID/requirements.txt
 
 # Download models
 RUN wget -O models/checkpoints/albedobaseXL_v3Mini.safetensors https://civitai.com/api/download/models/892880 && \
