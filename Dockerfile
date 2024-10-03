@@ -48,7 +48,13 @@ WORKDIR /comfyui
 
 # Clone and install custom nodes
 RUN git clone https://github.com/cubiq/ComfyUI_InstantID.git custom_nodes/ComfyUI_InstantID
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip3 install --upgrade -r custom_nodes/ComfyUI_InstantID/requirements.txt
+
+# Installing requirements.txt automatically installs insightface 0.2.1. However, this version
+# does not work and throws error "got an unexpected keyword argument 'providers'". We have to
+# install the version of 0.7.3.
+RUN pip3 install insightface==0.7.3
 
 # Download models
 RUN wget -O models/checkpoints/albedobaseXL_v3Mini.safetensors https://civitai.com/api/download/models/892880 && \
@@ -60,8 +66,10 @@ RUN wget -O models/checkpoints/albedobaseXL_v3Mini.safetensors https://civitai.c
   wget -O models/insightface/models/antelopev2/scrfd_10g_bnkps.onnx https://huggingface.co/MonsterMMORPG/tools/resolve/main/scrfd_10g_bnkps.onnx && \
   mkdir -p models/instantid/SDXL && \
   wget -O models/instantid/SDXL/ip-adapter.bin https://huggingface.co/InstantX/InstantID/resolve/main/ip-adapter.bin && \
-  mkdir -p controlnet/SDXL/instantid && \
-  wget -O controlnet/SDXL/instantid/diffusion_pytorch_model.safetensors https://huggingface.co/InstantX/InstantID/resolve/main/ControlNetModel/diffusion_pytorch_model.safetensors
+  mkdir -p models/controlnet/SDXL/instantid && \
+  wget -O models/controlnet/SDXL/instantid/diffusion_pytorch_model.safetensors https://huggingface.co/InstantX/InstantID/resolve/main/ControlNetModel/diffusion_pytorch_model.safetensors
+
+ADD src/extra_model_paths.yaml /comfyui/input
 
 # Start the container
 CMD /start.sh
