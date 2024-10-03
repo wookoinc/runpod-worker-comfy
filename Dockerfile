@@ -69,7 +69,8 @@ RUN wget -O models/checkpoints/albedobaseXL_v3Mini.safetensors https://civitai.c
   mkdir -p models/controlnet/SDXL/instantid && \
   wget -O models/controlnet/SDXL/instantid/diffusion_pytorch_model.safetensors https://huggingface.co/InstantX/InstantID/resolve/main/ControlNetModel/diffusion_pytorch_model.safetensors
 
-ADD src/extra_model_paths.yaml /comfyui/input
+# Add example images
+ADD assets/lecun.jpg /comfyui/input
 
 # Start the container
 CMD /start.sh
